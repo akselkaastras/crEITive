@@ -1,0 +1,112 @@
+Commands file
+
+There are 3 mandatory cards, plus at least 1 mandatory #conductivity card
+and 3 optional cards.
+A #conductivity card contains 3 mandatory subcards.
+The order of the cards has no importance as well as the order of the
+subcards after the corresponding card and before the following card if any.
+Only lines beginnng with a # are considered by the C++ code.
+If the characters following the # is the name of a card
+(blank characters are ignored), the parameters on the next lines are read.
+If the card is a #conductivity card, until the next card,
+only following lines beginnng with a ## are considered by the C++ code.
+If the characters following the ## is the name of a subcard
+(blank characters are ignored), the parameters on the next lines are read.
+
+* The card(s) #conductivity
+  There can be as many as one wants, for each #conductivity card,
+  the subcards beginning with ## are read (blank characters are ignored
+  and the order has no importance).
+  Each #conductivity card gives the parameters of a radially symmetric
+  C^\infty function sigma with compact support in the open unit ball.
+  The support is then a ball of radius r < 1.
+  If several #conductivity cards are given, the overall conductivity sigma
+  is given by sigma = 1 + sum(sigma_i -1) where sigma_i are the conductivities
+  given by each card. If the supports do not intersect, we then have
+  q = sum q_i where
+  q = Delta sigma^1/2 / sigma^1/2,
+  q = Delta sigma_i^1/2 / sigma_i^1/2.
+
+  The #conductivity contains 3 mandatory subcards:
+    * The subcard ##radius
+      The radius of the support.
+    * The subcard ##amplitude
+      The amplitude of the conductivity (real number).
+    * The subcard ##innerextent
+      Real number in the interval [0,1).
+      Calling "r" the support radius, "sigmamax" the amplitude and "alpha"
+      the inner extent, for 0 <= x²+y²+z² <= alpha²*r², the conductivity
+      is equal to "sigmamax" and for alpha²*r² <= x²+y²+z² <= r²,
+      the conductivity smoothly decreases to 1.
+
+* The card #nd
+  Maximal degree of spherical harmonics in the
+  computation of the Dirichlet-to-Neumann map.
+  The number Nd of quadrature points on the unit sphere
+  is linked to this number by Nd=2*(nd+1)^2.
+
+* The card #stepsize
+  Stepsize in the discretization of the conductivity function.
+  Note that some step sizes may be larger since there is no use to have
+  discretization points where the conductivity function is constant.
+
+* The card #dnmap
+  Name of the file where to save of the Dirichlet-to-Neumann map.
+  The Dirichlet-to-Neumann is saved in the directory dnmap/.
+
+Optional card
+
+* The card #conductivityonradius
+  Used to save the conductivity at points in [0,1].
+  Useful to compare the conductivity and the one reconstructed by the
+  inverse code.
+  The next line is the stepsize of the discretization of [0,1]
+  and the following one, the name of the file where to save the conductivity.
+
+* The card #qonradius
+  Used to save q at points in [0,1].
+  Useful to compare q and the one reconstructed by the
+  inverse code.
+  The next line is the stepsize of the discretization of [0,1]
+  and the following one, the name of the file where to save q.
+
+* The card #dnmapeigenvalues
+  Name of the file where to save the eigenvalues of the
+  Dirichlet-to-Neumann map
+
+#conductivity
+##radius
+0.8
+##amplitude
+1.5
+##innerextent
+0.75
+
+#conductivity
+##radius
+0.4
+##amplitude
+0.5
+##innerextent
+0.5
+
+#nd
+15
+#stepsize
+9.5367431640625e-07
+
+#dnmap
+dnmap.dat
+
+Optional card
+
+#conductivityonradius
+9.765625e-4
+conductivity.dat
+
+#qonradius
+9.765625e-4
+q.dat
+
+#dnmapeigenvalues
+dnmapeigenvalues.dat

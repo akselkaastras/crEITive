@@ -1,0 +1,85 @@
+Commands file
+
+There are 7 mandatory cards and 2 optional cards beginning with a #. 
+The order of the cards has no importance.
+Only lines beginnng with a # are considered by the C++ code.
+If the characters following the # is the name of a card
+(blank characters are ignored), the parameter on the next line is read,
+for the 2 optional cards, the 2 parameters of the next lines are read.
+
+* The card #dnmap
+  Name of the Dirichlet-to-Neumann map file.
+
+* The card #method
+  Name of the method used to compute the CGO solutions traces, it is either
+  * t0 for computations with t0 approximation.
+  * t for computations with Nachman algorithm.
+
+  zeta is written as zeta = zetanorm/sqrt(2)*(kT+i*k)
+  where k,kT \in \mathbb{R}^3, |k|=|kT|=1 and k.kT=0. 
+
+* The card #zetanorm
+  The norm of zeta to compute the CGO solutions traces.
+
+* The card #nk
+  The number of discretization points of [0,2*Pi) for the rotation around k
+  (number of discretization points for kT when k is chosen).
+
+* The card #nt
+  The number of discretization points of [0,Pi] for the elevation of k.
+
+* The card #np
+  The number of discretization points of [0,Pi) for the azimuth of k.
+
+  For a real conductivity, taking the elevation of k in [0,Pi) (instead of
+  [0,Pi]) and the azimuth of k in [0,Pi) (instead of [0,2*Pi)) is
+  sufficient since the CGO solution trace \psi_{kappa*(kT-ik)} is given by
+  \bar{\psi}_{kappa*(kT+ik)}
+
+* The card #cgostraces
+  Name of the file where to save the CGO solutions traces.
+
+Optional cards
+
+* The card #dnmap0
+  Name of the file where to read or write the Dirichlet-to-Neumann map
+  for a conductivity equal to 1.
+  * If the next line is "write", the C++ code saves the computed
+    Dirichlet-to-Neumann map for a conductivity equal to 1
+    in the file whose name is given in the following line.
+  * If the next line is "read", the C++ code uses the
+    Dirichlet-to-Neumann map for a conductivity equal to 1
+    stored in the file whose name is given in the following line.
+
+* The card #s0
+  Name of the file where to read or write the Single Layer Operator Matrix.
+  * If the next line is "write", the C++ code saves the computed
+    Single Layer Operator Matrix in the file whose name is given
+    in the following line.
+  * If the next line is "read", the C++ code uses the
+    Single Layer Operator Matrix stored in the file whose name is given
+    in the following line.
+
+#dnmap
+dnmap.dat
+#method
+t
+#zetanorm
+2
+#nk
+8
+#nt
+4
+#np
+4
+#cgostraces
+cgostraces.dat
+
+Optional cards
+
+#dnmap0
+read
+dnmap0_nd15.dat
+#s0
+read
+s0_nd15.dat

@@ -1,0 +1,128 @@
+Commands file
+
+There are 10 mandatory cards and 2 optional cards beginning with a #. 
+The order of the cards has no importance.
+Only lines beginnng with a # are considered by the C++ code.
+If the characters following the # is the name of a card
+(blank characters are ignored), the parameter on the next line is read,
+for the 2 optional cards, the 2 parameters of the next lines are read.
+
+* The card #dnmap
+  Name of the data file giving the Dirichlet-to-Neumann map.
+  The dnmap file should have Nd rows and Nd columns, where Nd=2*(nd+1)^2.
+
+* The card #method
+  Name of the method used for the reconstruction, it is either
+  * calderon for a reconstruction with Calderón approximation.
+  * texp for a reconstruction with texp approximation.
+  * t0 for a reconstruction with t0 approximation.
+  * t for a reconstruction with Nachman algorithm.
+
+* The card #ift
+  Name of the method used to compute Inverse Fourier Transform, it is either
+  * ifft for an Inverse Fast Fourier Transform
+  * ws for an inversion with the Whittaker-Shannon formula
+
+* The card #ngrid
+  Parameter for the grid where the scattering transform is computed
+  * If the card #ift is ifft, ngrid is the
+    Number of grid points for the scattering transform
+    The scattering transform is computed for xi=ximaxonmo*(ii,jj,kk),
+    where
+    ximaxonmo = Pi*(ngrid-1)/(2*ngrid)
+    -ngrid+1 <= ii,jj,kk <=ngrid-1
+    ii+ngrid-1 ≡ 0 [2]
+    jj+ngrid-1 ≡ 0 [2]
+    kk+ngrid-1 ≡ 0 [2]
+    Hence, the larger xi norm is sqrt(3)*Pi*(ngrid-1)^2/(2*ngrid).
+  * If the card #ift is ws, ngrid is the
+    Maximal integer for the computation of the scattering transform.
+    The scattering transform is computed for xi=Pi*(ii,jj,kk),
+    where -ngrid <= ii,jj,kk <=ngrid.
+    Hence, the larger xi norm is sqrt(3)*Pi*ngrid.
+
+* The card #zeta
+  Method for the choice of zeta norm, it is either
+  * fixed, in this case, the norm of zeta is the same for all grid points.
+  * proportional, in this case, the norm of zeta is proportional to
+    the norm of xi for each grid point.
+
+* The card #pkappa
+  Parameter for kappa, the norm of zeta/sqrt(2) (or equivalently,
+  the norm of the real/imaginary part of zeta), which has to be
+  used to compute the scattering transform.
+  In the computation of the scattering transform, |zeta| has
+  to be larger than |xi|/sqrt(2).
+  * If the card #zeta is fixed, then the scattering transform
+    is computed with the same fixed norm of zeta for all xi.
+    kappa is given by
+    * If #ift card is ifft
+      kappa = pkappa*sqrt(3)*Pi*(ngrid-1)^2/(4*ngrid).
+    * If #ift card is ws
+      kappa = pkappa*sqrt(3)*Pi*ngrid/2.
+  * If the card #zeta is proportional, then the scattering transform
+    is computed with a norm of zeta proportional to the norm of xi for each xi.
+    kappa is given by kappa = pkappa*|xi|/2.
+
+* The card #mesh
+  Name of the gmsh mesh file used to compute the reconstructed conductivity.
+
+* The card #cgostraces
+  Name of the file where to save the CGO solutions traces.
+
+* The card #qhat
+  Name of the file where to save the reconstructed Fourier Transform of q.
+
+* The card #conductivity
+  Name of the file where to save the reconstructed conductivity.
+
+Optional cards
+
+* The card #dnmap0
+  Name of the file where to read or write the Dirichlet-to-Neumann map
+  for a conductivity equal to 1.
+  * If the next line is "write", the C++ code saves the computed
+    Dirichlet-to-Neumann map for a conductivity equal to 1
+    in the file whose name is given in the following line.
+  * If the next line is "read", the C++ code uses the
+    Dirichlet-to-Neumann map for a conductivity equal to 1
+    stored in the file whose name is given in the following line.
+
+* The card #s0
+  Name of the file where to read or write the Single Layer Operator Matrix.
+  * If the next line is "write", the C++ code saves the computed
+    Single Layer Operator Matrix in the file whose name is given
+    in the following line.
+  * If the next line is "read", the C++ code uses the
+    Single Layer Operator Matrix stored in the file whose name is given
+    in the following line.
+
+#dnmap
+dnmap.dat
+#ift
+ifft
+#zeta
+proportional
+#ngrid
+8
+#pkappa
+1
+#method
+t
+#mesh
+ball_0p1_3D.msh
+#cgostraces
+cgostraces.dat
+#qhat
+qhat.dat
+#conductivity
+conductivity.dat
+
+Optional cards
+
+#dnmap0
+read
+dnmap0_nd15.dat
+#s0
+read
+s0_nd15.dat

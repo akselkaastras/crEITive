@@ -1,0 +1,90 @@
+#include "eit.h"
+
+/*
+  Computes zeta for a given xi and a given norm sqrt(2)*kappa.
+
+  zeta can be written as
+  zeta = zeta_r + i zeta_i
+  Where
+  zeta_r = -xi/2 + xi^T
+  xi^T . xi = 0
+  zeta_i . xi = zeta_i . xi^T = 0
+  |zeta_r| = |zeta_i| = |zeta| / sqrt(2) = kappa
+
+  zeta is chosen in this way
+  Writing xi in spherical coordinates
+  xi = |xi| ( sin(theta)cos(phi), sin(theta)sin(phi), cos(theta) )
+
+  zeta_r = -xi/2 + a*( cos(theta)cos(phi), cos(theta)sin(phi), -sin(theta) )
+  zeta_i = |zeta_i|*( -sin(phi), cos(phi), 0 )
+  With a = sqrt(|zeta_i|^2 - |xi|^2/4) = sqrt(|zeta|^2/2 - |xi|^2/4) = sqrt(kappa^2 - |xi|^2/4)
+
+  Writing zeta = kappa*(k^T + i k)
+  kappa >= 0
+  k^T,k \in R^3 with k^T.k = 0 and |k|=|k^T|=1
+
+  k^T = zeta_r/kappa = -xi/(2*kappa) + sqrt(kappa^2 - |xi|^2/4)/kappa*( cos(theta)cos(phi), cos(theta)sin(phi), -sin(theta) )
+  k = zeta_i/kappa = ( -sin(phi), cos(phi), 0 )
+
+  /!\/!\ /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+  The chosen norm of zeta should verify |zeta|^2 >= |xi|^2/2
+  /!\/!\ /!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\/!\
+*/
+
+void zeta_xi(double &pkappa,MatDouble &xi,VecDouble &kappa,MatDouble &k,MatDouble &kT,string &zetamethodname)
+{
+  double ximax=-xi(0,0);
+
+  if(zetamethodname=="fixed")
+    {
+      kappa = ScalVecDouble(kappa.size(),pkappa*sqrt(3.0)*ximax/2.0);
+    }
+  else if (zetamethodname=="proportional")
+    {
+      kappa = (pkappa/2.0)*vec_norm_2_rows_mat(xi);
+    }
+
+  k = ZeroMatDouble (k.size1(),k.size2());
+  kT = -xi/2.0;
+
+  //Spherical coordinates of xi
+  MatDouble xis = cart2sph_rows_mat(xi);
+  VecDouble xis0 = boostublas::column(xis,0);
+  MatDouble xise = boostublas::subrange(xis,0,xis.size1(),1,xis.size2());
+  MatDouble cxise = MatOp(xise,cos);
+  MatDouble sxise = MatOp(xise,sin);
+
+  //a
+  VecDouble a = VecOp((VecDouble)(VecOp(kappa,square<double>)-VecOp(xis0,square<double>)/4.0),sqrt);
+
+  //k
+  boostublas::column(k,0)=-boostublas::column(sxise,1);
+  boostublas::column(k,1)=boostublas::column(cxise,1);
+
+  //zeta is zero when xi=0, which happens for zetamethodname="proportional" and xi.size() odd.
+  //kT
+  //0
+  boostublas::column(kT,0)+=boostublas::element_prod(a,boostublas::element_prod(boostublas::column(cxise,0),boostublas::column(cxise,1)));
+  //1
+  boostublas::column(kT,1)+=boostublas::element_prod(a,boostublas::element_prod(boostublas::column(cxise,0),boostublas::column(sxise,1)));
+  //2
+  boostublas::column(kT,2)-=boostublas::element_prod(a,boostublas::column(sxise,0));
+
+  if(zetamethodname=="fixed"||xi.size1()%2==0)
+    {
+      boostublas::column(kT,0)=boostublas::element_div(boostublas::column(kT,0),kappa);
+      boostublas::column(kT,1)=boostublas::element_div(boostublas::column(kT,1),kappa);
+      boostublas::column(kT,2)=boostublas::element_div(boostublas::column(kT,2),kappa);
+    }
+  else if(zetamethodname=="proportional"&&xi.size1()%2==1)
+    {
+      kappa((kappa.size()-1)/2)=1.0; //temporary
+      boostublas::column(kT,0)=boostublas::element_div(boostublas::column(kT,0),kappa);
+      boostublas::column(kT,1)=boostublas::element_div(boostublas::column(kT,1),kappa);
+      boostublas::column(kT,2)=boostublas::element_div(boostublas::column(kT,2),kappa);
+      kappa((kappa.size()-1)/2)=0.0;
+      kT((kappa.size()-1)/2,0)=1.0;
+      kT((kappa.size()-1)/2,1)=0.0;
+      kT((kappa.size()-1)/2,2)=0.0;
+    }
+}

@@ -13,6 +13,7 @@
 <li>OpenMP</li>
 </ul>
  Check out our <a href="https://creitive.compute.dtu.dk">website</a> for installation guide and tutorials. 
+ <p></p>
  <p align="center">
     <img class="aligncenter size-full wp-image-63" src="http://creitive.compute.dtu.dk/wp-content/uploads/2021/01/example_reconstruction.png" alt="" width="556" height="273" />
 </p>

@@ -95,7 +95,7 @@ else ifeq ($(OSTYPE), Darwin)
 	LDFLAGS += -L$(OPENBLAS_PATH)/lib  -Wl -lopenblas
 
 	CXX = clang++
-	CXXFLAGS = -std=c++11 -DARMA_DONT_PRINT_CXX11_WARNING -O3 -Wall $(INC) -Xclang -fopenmp
+	CXXFLAGS = -std=c++11 -DARMA_DONT_PRINT_CXX11_WARNING -O3 -Wall $(INC)
 
 endif
 

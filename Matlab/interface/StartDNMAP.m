@@ -53,7 +53,7 @@ if ~cluster
             error('Program aborted.');
         end
         [status, cmdout] = system([cmd,'& echo $!'],'-echo'); % run command in terminal 
-        disp(cmdout);
+        %disp(cmdout);
         if ~status
             error('Something went wrong. Please make sure libraries are installed and loaded correctly');
         end

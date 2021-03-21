@@ -17,7 +17,6 @@ void kp_matrix(MatComplex &Kp,Conductivity &sigma)
   MatDouble cttxmoy=sigma.GetCosElevationRotationsSpherePoints();
   MatDouble ptxmoy=sigma.GetAzimuthRotationsSpherePoints();
   MatDouble kernf=sigma.GetKernelF();
-  std::cout << "Test: Is Kernel nnan? ...... " << kernf(1,1) << std::endl;
   unsigned nponetwo=pow(n+1,2);
   unsigned ni,nj,k,kprime;
   int l,lprime;

@@ -7,8 +7,8 @@ INCLUDE = include
 OBJ = obj
 BIN = fast_pcc
 
-CXXFLAGS += -I$(INCLUDE) -lomp
-# CXXFLAGS += -I$(INCLUDE) -Xclang -fopenmp
+CXXFLAGS += -I$(INCLUDE) -fopenmp
+# CXXFLAGS += -I$(INCLUDE) -fopenmp
 
 SRCS =$(wildcard $(SRC)/*.cpp)
 INCLUDES =$(wildcard $(INCLUDE)/*.h)

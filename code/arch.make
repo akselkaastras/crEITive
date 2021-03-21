@@ -45,22 +45,36 @@ OSTYPE    = $(shell uname)
 ifeq ($(OSTYPE), Linux)
 ##### linux #####
 
+	#GSL_PATH = /appl/gsl/2.5
+	#SUITESPARSE_PATH = /appl/SuiteSparse/5.1.2-sl73
+
+
+	#INC += -I/usr/local
+	#INC += -I$(GSL_PATH)/include
+
+	#LIBS += -L$(GSL_PATH)/lib -Wl,-rpath=$(GSL_PATH)/lib -lgsl -lgslcblas
+	#LIBS += -L$(SUITESPARSE_PATH)/lib -Wl,-rpath=$(SUITESPARSE_PATH)/lib -lumfpack -lamd
+	#LIBS += -lfftw3
+	#LIBS += -L$(OPENBLAS_PATH)/lib -Wl,-rpath=$(OPENBLAS_PATH)/lib -lopenblas
+
 	GSL_PATH = /appl/gsl/2.5
 	SUITESPARSE_PATH = /appl/SuiteSparse/5.1.2-sl73
+	#FFTW_PATH = /appl/fftw/3.3.8/${CPUTYPEV}
 
-
-	INC += -I/usr/local
 	INC += -I$(GSL_PATH)/include
+	INC += -I$(SUITESPARSE_PATH)/include
 
-	LIBS += -L$(GSL_PATH)/lib -Wl,-rpath=$(GSL_PATH)/lib -lgsl -lgslcblas
-	LIBS += -L$(SUITESPARSE_PATH)/lib -Wl,-rpath=$(SUITESPARSE_PATH)/lib -lumfpack -lamd
-	LIBS += -lfftw3
-	LIBS += -L$(OPENBLAS_PATH)/lib -Wl,-rpath=$(OPENBLAS_PATH)/lib -lopenblas
+	LDFLAGS += $(addprefix -L, $(subst :, ,${LD_LIBRARY_PATH}))
+	LDFLAGS += -L$(GSL_PATH)/lib -Wl,-rpath=$(GSL_PATH)/lib -lgsl -lgslcblas
+	#LDFLAGS += -L$(FFTW_PATH)/lib -Wl,-rpath=$(FFTW_PATH)/lib -lfftw3
+	LDFLAGS += -lfftw3
+	LDFLAGS += -L$(SUITESPARSE_PATH)/lib -Wl,-rpath=$(SUITESPARSE_PATH)/lib -lumfpack -lamd
+	LDFLAGS += -lopenblas
 
 
 
 	CXX = g++
-	CXXFLAGS = -O3 -Wall $(INC) -fopenmp
+	CXXFLAGS = -O3 -Wall $(INC)
 
 
 else ifeq ($(OSTYPE), Darwin)

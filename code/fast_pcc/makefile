@@ -7,8 +7,17 @@ INCLUDE = include
 OBJ = obj
 BIN = fast_pcc
 
+OSTYPE    = $(shell uname)
+
+ifeq ($(OSTYPE), Linux)
+##### linux #####
 CXXFLAGS += -I$(INCLUDE) -fopenmp
-# CXXFLAGS += -I$(INCLUDE) -fopenmp
+
+else ifeq ($(OSTYPE), Darwin)
+##### macOS #####
+CXXFLAGS += -I$(INCLUDE) -Xclang -fopenmp
+LDFLAGS += -lomp
+endif
 
 SRCS =$(wildcard $(SRC)/*.cpp)
 INCLUDES =$(wildcard $(INCLUDE)/*.h)

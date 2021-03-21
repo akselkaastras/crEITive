@@ -5,8 +5,7 @@ INCLUDE = include
 OBJ = obj
 BIN = fast_eit_cmplx
 
-CXXFLAGS += -I$(INCLUDE) -Xclang -fopenmp
-LDFLAGS += -lomp
+CXXFLAGS += -I$(INCLUDE) -fopenmp
 
 SRCS = $(wildcard $(SRC)/*.cpp)
 INCLUDES = $(wildcard $(INCLUDE)/*.h)

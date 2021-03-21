@@ -57,15 +57,7 @@ OBJ = obj
 BIN = fast_eit
 
 # Default flags
-CXXFLAGS += -I$(INCLUDE)
-# It is bad practice to force certain flags in the makefile
-# This should be the users responsibility!
-# Note that intel compilers prefer -qopenmp, so you can't even do -fopenmp
-CXXFLAGS += -Xclang -fopenmp
-# Same here... Let users control this, less error prone.
-# Also, I don't think you need this. The -fopenmp should do this automatically.
-# I also think clang do this. But perhaps it is really needed.
-LIBS += -lomp
+CXXFLAGS += -I$(INCLUDE) -fopenmp
 
 SRCS = $(wildcard $(SRC)/*.cpp)
 INCLUDES = $(wildcard $(INCLUDE)/*.h)

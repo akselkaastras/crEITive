@@ -72,7 +72,7 @@ parallel = 1;   % {0,1} - parallelize or not? (Requires openMP)
 clusterscript = 0; 
 
 % Unique id number for your forward computation
-dnmapid  = 8;
+dnmapid  = 2;
 
 
 %% Run

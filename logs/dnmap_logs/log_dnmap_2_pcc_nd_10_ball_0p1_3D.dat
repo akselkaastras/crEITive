@@ -1,0 +1,82 @@
+Reading the commands file and
+and initializing surfaces data...
+File commands/dnmap_commands/commands_dnmap_2_pcc_nd_10_ball_0p1_3D.dat successfully opened
+Parameters for the conductivity function
+Number of components: 3
+Component 1
+Ellipsoid center:
+[3](0.434667,0.116469,0)
+Ellipsoid axes direction vectors:
+[3,3]((0.258819,-0.965926,0),(0.965926,0.258819,0),(0,0,1))
+Ellipsoid radii:
+[3](0.546,0.273,0.273)
+Amplitude:
+0.5
+Number of quadrature points:
+242 (n=10)
+Component 2
+Ellipsoid center:
+[3](-0.531259,0.14235,0)
+Ellipsoid axes direction vectors:
+[3,3]((0.258819,0.965926,0),(-0.965926,0.258819,0),(0,0,1))
+Ellipsoid radii:
+[3](0.468,0.234,0.234)
+Amplitude:
+0.5
+Number of quadrature points:
+242 (n=10)
+Component 3
+Ball center:
+[3](-0.09,-0.55,0)
+Ball radius:
+0.273
+Amplitude:
+2
+Number of quadrature points:
+242 (n=10)
+The conductivity function at the points of
+the mesh ball_0p1_3D.msh will be saved in the file:
+conductivity_dnmapid_2_true.dat (in the directory conductivity/)
+Parameters for Dirichlet-to-Neumann map
+nd=10
+The Dirichlet-to-Neumann map will be saved in the file:
+dnmap_2.dat (in the directory dnmap/)
+Initializing conductivity data...
+Component 1
+Component 2
+Component 3
+File mesh/ball_0p1_3D.msh successfully opened
+Reading the gmsh file nodes...
+Computing the conductivity at the given nodes ...
+(not used to compute the Dirichlet-to-Neumann map)
+(intended to be saved for possible comparisons)
+Saving the conductivity in results/conductivity/conductivity_dnmapid_2_true.dat
+Building matrix...
+3 x 3 blocks
+Block (0,0)...
+Block (0,1)...
+Block (0,2)...
+Block (1,0)...
+Block (1,1)...
+Block (1,2)...
+Block (2,0)...
+Block (2,1)...
+Block (2,2)...
+Building right hand side...
+3 blocks
+Block 0
+Block 1
+Block 2
+Solving linear system...
+Computing densities values...
+3 blocks
+Block 0
+Block 1
+Block 2
+Computing the normal derivatives...
+Computing the Dirichlet-to-Neumann map... 
+Saving the Dirichlet-to-Neumann map in results/dnmap/dnmap_2.dat
+Elapsed time: 938.922s
+ting the Dirichlet-to-Neumann map... 
+Saving the Dirichlet-to-Neumann map in results/dnmap/dnmap_2.dat
+Elapsed time: 965.095s

@@ -33,26 +33,59 @@ void normal_derivatives(MatComplex &ND,MatComplex &valdens,VecConductivity &sigm
 	    kstart=0;
 	    for (unsigned k=0;k<nsig;k++)//conductivities
 	      {
-		unsigned n=sigma(k).GetMaxDegree();
-		kend=kstart+2*(n+1)*(n+1);
-		VecDouble alpha=sigma(k).GetAlpha();
-		MatDouble x=sigma(k).GetSurfacePoints();
-		VecDouble jx=sigma(k).GetJacobian();
-		VecComplex valdensk=VecRangeComplex(valdenskd,boostublas::range(kstart,kend));
+			unsigned n=sigma(k).GetMaxDegree();
+			double width=sigma(k).GetWidth();
+			if (width<0.01)
+			{
+				kend=kstart+2*(n+1)*(n+1);
+				VecDouble alpha=sigma(k).GetAlpha();
+				MatDouble x=sigma(k).GetSurfacePoints();
+				VecDouble jx=sigma(k).GetJacobian();
+				VecComplex valdensk=VecRangeComplex(valdenskd,boostublas::range(kstart,kend));
 
-		//make the sum (quadrature points)
-		for (unsigned ip=0;ip<2*(n+1);ip++) 
-		  {
-		    for (unsigned it=0;it<n+1;it++) 
-		      {
-			ni=it+(n+1)*ip;
-			VecDouble xi=boostublas::row(x,ni);
-			double normxi2=pow(xi(0),2)+pow(xi(1),2)+pow(xi(2),2);
-			double normdiffx=boostublas::norm_2(xk-xi);
-			ND(kx,kd)+=alpha(it)*jx(ni)*valdensk(ni)*(normxi2-1.0)/pow(normdiffx,3);
-		      }
-		  }
-		kstart=kend;
+				//make the sum (quadrature points)
+				for (unsigned ip=0;ip<2*(n+1);ip++) 
+				  {
+				    for (unsigned it=0;it<n+1;it++)
+				      {
+					ni=it+(n+1)*ip;
+					VecDouble xi=boostublas::row(x,ni);
+					double normxi2=pow(xi(0),2)+pow(xi(1),2)+pow(xi(2),2);
+					double normdiffx=boostublas::norm_2(xk-xi);
+					ND(kx,kd)+=alpha(it)*jx(ni)*valdensk(ni)*(normxi2-1.0)/pow(normdiffx,3);
+				      }
+				  }
+				kstart=kend;
+			}
+			else 
+			{
+				kend=kstart+2*(n+1)*(n+1);
+				VecDouble alpha=sigma(k).GetAlpha();
+				MatDouble x=sigma(k).GetSurfacePoints();
+				MatDouble x2=sigma(k).GetSurfacePoints2();
+				VecDouble jx=sigma(k).GetJacobian();
+				VecDouble jx2=sigma(k).GetJacobian2();
+				VecComplex valdensk=VecRangeComplex(valdenskd,boostublas::range(kstart,kend));
+
+				//make the sum (quadrature points)
+				for (unsigned ip=0;ip<2*(n+1);ip++) 
+				  {
+				    for (unsigned it=0;it<n+1;it++)
+				      {
+					ni=it+(n+1)*ip;
+					VecDouble xi=boostublas::row(x,ni);
+					VecDouble xi2=boostublas::row(x2,ni);
+					double normxi2=pow(xi(0),2)+pow(xi(1),2)+pow(xi(2),2);
+					double normdiffx=boostublas::norm_2(xk-xi);
+					double normxi22=pow(xi2(0),2)+pow(xi2(1),2)+pow(xi2(2),2);
+					double normdiffx2=boostublas::norm_2(xk-xi2);
+					ND(kx,kd)+=alpha(it)*jx(ni)*valdensk(ni)*(normxi2-1.0)/pow(normdiffx,3);
+					ND(kx,kd)+=alpha(it)*jx2(ni)*valdensk(ni)*(normxi22-1.0)/pow(normdiffx2,3);
+				      }
+				  }
+				kstart=kend;
+			}
+			
 	      }
 	  }
       }

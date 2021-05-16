@@ -1,0 +1,47 @@
+Reading the commands file...
+File commands/eit_commands/commands_eit_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat successfully opened
+Dirichlet-to-Neumann map filename:
+dnmap_10.dat
+Reconstruction with texp approximation
+Truncation with ideal low-pass filter
+Truncation radius =9
+Inverse Fourier Transform will be computed by IFFT
+Number of grid points for the scattering transform ngrid^3:
+ngrid=11
+Fixed norm zeta:
+|zeta|=6.36396
+The Dirichlet-to-Neumann map for a conductivity equal to 1
+will be read from the file:
+dnmap0_nd10.dat (in the directory dnmap0/)
+Mesh filename for interpolation:
+ball_0p05_3D.msh
+The trace of the CGO solutions
+will be saved in the file:
+cgo_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat (in the directory cgostraces/)
+The reconstructed Fourier Transform of q will be saved in the file:
+qhat_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat (in the directory qhat/)
+The reconstructed conductivity will be saved in the file:
+conductivity_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat (in the directory conductivity/)
+the scale is 1.58666
+File results/dnmap/dnmap_10.dat successfully opened
+Reading the Dirichlet-to-Neumann map file...
+Maximal degree of spherical harmonics:
+nd=10
+Computing the Gauss-Legendre nodes and weights...
+Computing the values of phi...
+File results/dnmap0/dnmap0_nd10.dat successfully opened
+Reading the Dirichlet-to-Neumann map file for a conductivity equal to 1...
+Computing qhat...
+1331 grid points...
+Saving the traces of the CGO solutions in results/cgostraces/cgo_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat
+Saving the scattering transform in results/qhat/qhat_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat
+File mesh/ball_0p05_3D.msh successfully opened
+Reading the gmsh file...
+Computing the Inverse Fourier Transform of qhat...
+Trilinear interpolation...
+Saving q in results/q/q_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat
+Computing the Schrödinger matrix...
+Computing the Schrödinger right hand side...
+Solving Schrödinger linear system... 
+Saving the conductivity in results/conductivity/conductivity_10_texp_nd_10_fixed_ifft_ngrid_11_kap_1_dnmap_10.dat
+Elapsed time: 158.999s

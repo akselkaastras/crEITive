@@ -30,8 +30,8 @@ pkappa      = 1; % |zeta| = p
 % Compute conductivity and q on mesh
 mesh = 'ball_0p05_3D.msh';  % choose mesh from crEITive/mesh/ folder
 
-dnmapid     = 1; % unique dnmap integer id number of dnmap data
-reconid     = 1; % unique reconstruction integer id number
+dnmapid     = 10; % unique dnmap integer id number of dnmap data
+reconid     = 10; % unique reconstruction integer id number
 parallel    = 1; % {0,1} - parallelize or not?
 cluster     = 0;
 

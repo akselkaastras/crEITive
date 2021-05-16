@@ -1,0 +1,34 @@
+Reading the commands file and
+and initializing surfaces data...
+File commands/dnmap_commands/commands_dnmap_9_pcc_nd_10_ball_0p1_3D.dat successfully opened
+Parameters for the conductivity function
+Number of components: 1
+Component 1
+Ball center:
+[3](0,0,0)
+Ball radius:
+0.9
+Amplitude:
+2
+Number of quadrature points:
+242 (n=10)
+The conductivity function at the points of
+the mesh ball_0p1_3D.msh will be saved in the file:
+conductivity_dnmapid_9_true.dat (in the directory conductivity/)
+Parameters for Dirichlet-to-Neumann map
+nd=10
+The Dirichlet-to-Neumann map will be saved in the file:
+dnmap_9.dat (in the directory dnmap/)
+Initializing conductivity data...
+Component 1
+File mesh/ball_0p1_3D.msh successfully opened
+Reading the gmsh file nodes...
+Computing the conductivity at the given nodes ...
+(not used to compute the Dirichlet-to-Neumann map)
+(intended to be saved for possible comparisons)
+vradii0.9
+vradii221
+Saving the conductivity in results/conductivity/conductivity_dnmapid_9_true.dat
+Building matrix...
+1 x 1 blocks
+Block (0,0)...

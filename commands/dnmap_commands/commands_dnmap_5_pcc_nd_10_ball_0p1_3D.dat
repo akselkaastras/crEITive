@@ -1,0 +1,22 @@
+#nd
+10
+#dnmap
+dnmap_5.dat
+#conductivity
+##center
+cartesian
+0.000000 0.000000 0.000000 
+##radius
+0.900000
+##width
+0.100000
+##amplitude
+2.000000
+##n
+10
+#conductivityonmesh
+ball_0p1_3D.msh
+conductivity_dnmapid_5_true.dat
+#qonmesh
+ball_0p1_3D.msh
+q_dnmapid_5_true.dat

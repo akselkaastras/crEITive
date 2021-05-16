@@ -74,8 +74,11 @@ class Conductivity
   double GetRadius(unsigned naxis) const;
   void SetRadii(VecDouble vechalfaxes);
   VecDouble GetRadii() const;
+  VecDouble GetRadii2() const;
+  void SetWidth(double valwidth);
   void SetAmplitude(double valamplitude);
   double GetAmplitude() const;
+  double GetWidth() const;
   double GetTwoMu() const;
   void Display() const;
   //
@@ -94,28 +97,34 @@ class Conductivity
   MatDouble GetSurfacePoints() const;
   VecDouble GetJacobian() const;
   MatDouble GetOutwardNormal() const;
+  MatDouble GetSurfacePoints2() const;
+  VecDouble GetJacobian2() const;
+  MatDouble GetOutwardNormal2() const;
   MatDouble GetAssociatedLegendreFunctions() const;
   MatComplex GetComplexExponentials() const;
   MatDouble GetCosElevationRotationsSpherePoints() const;
   MatDouble GetAzimuthRotationsSpherePoints() const;
   MatDouble GetKernelF() const;
+  MatDouble GetKernelF2() const;
   void InitializeData();
  private:
   VecDouble center;
   MatDouble axes;
   VecDouble radii;
+  VecDouble radii2;
+  double width;
   double amplitude;
   double twomu;
   //
   unsigned n;
   VecDouble t,ct,st,p,cp,sp;
   VecDouble alpha,beta;
-  MatDouble xc,xs,x;
-  VecDouble jac;
-  MatDouble nu;
+  MatDouble xc,xs,x,x2;
+  VecDouble jac,jac2;
+  MatDouble nu,nu2;
   MatDouble lf;
   MatComplex ep;
-  MatDouble cttxmoy,ptxmoy,kernf;
+  MatDouble cttxmoy,ptxmoy,kernf,kernf2;
 };
 
 #endif

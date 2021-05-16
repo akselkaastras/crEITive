@@ -17,6 +17,7 @@ void kp_matrix(MatComplex &Kp,Conductivity &sigma)
   MatDouble cttxmoy=sigma.GetCosElevationRotationsSpherePoints();
   MatDouble ptxmoy=sigma.GetAzimuthRotationsSpherePoints();
   MatDouble kernf=sigma.GetKernelF();
+  double width=sigma.GetWidth();
   unsigned nponetwo=pow(n+1,2);
   unsigned ni,nj,k,kprime;
   int l,lprime;
@@ -29,7 +30,11 @@ void kp_matrix(MatComplex &Kp,Conductivity &sigma)
   VecDouble cttxmoyrow (2*(n+1)*(n+1));
   VecDouble ptxmoyrow (2*(n+1)*(n+1));
 
-  //compute Kp
+if (width > 0.01)
+{
+
+MatDouble kernf2=sigma.GetKernelF2();
+  //compute Kp for two surfaces
   for (ni=0;ni<2*(n+1)*(n+1);ni++) 
     {
       cttxmoyrow=boostublas::row(cttxmoy,ni);
@@ -37,7 +42,7 @@ void kp_matrix(MatComplex &Kp,Conductivity &sigma)
       associated_legendre_functions(lftxmoy,cttxmoyrow,n);
       exp_i_m_phi(eptxmoy,ptxmoyrow);
 
-#pragma omp parallel default(none) shared(Kp,kernf,lf,lftxmoy,ep,eptxmoy,n,nponetwo,ni) private(k,l,kprime,lprime,nj)
+#pragma omp parallel default(none) shared(Kp,kernf,kernf2,lf,lftxmoy,ep,eptxmoy,n,nponetwo,ni) private(k,l,kprime,lprime,nj)
       {
 #pragma omp for collapse(2)
 	for (unsigned kl=0;kl<nponetwo;kl++) 
@@ -56,7 +61,7 @@ void kp_matrix(MatComplex &Kp,Conductivity &sigma)
 		      {
 			nj=jt+(n+1)*jp;
 			Kp(kl,klprime)+=kernf(ni,nj)*lf(jt,(k*(k+1))/2+abs(l))*lftxmoy(nj,(kprime*(kprime+1))/2+abs(lprime))*ep(jp,n-l)*eptxmoy(nj,n+lprime);
-      
+      Kp(kl,klprime)+=kernf2(ni,nj)*lf(jt,(k*(k+1))/2+abs(l))*lftxmoy(nj,(kprime*(kprime+1))/2+abs(lprime))*ep(jp,n-l)*eptxmoy(nj,n+lprime);
 
 		      }
 		  }
@@ -67,3 +72,44 @@ void kp_matrix(MatComplex &Kp,Conductivity &sigma)
     }
   Kp/=4.0*Pi;
 }
+else 
+{
+  //compute Kp for one surface
+  for (ni=0;ni<2*(n+1)*(n+1);ni++) 
+    {
+      cttxmoyrow=boostublas::row(cttxmoy,ni);
+      ptxmoyrow=boostublas::row(ptxmoy,ni);
+      associated_legendre_functions(lftxmoy,cttxmoyrow,n);
+      exp_i_m_phi(eptxmoy,ptxmoyrow);
+
+#pragma omp parallel default(none) shared(Kp,kernf,lf,lftxmoy,ep,eptxmoy,n,nponetwo,ni) private(k,l,kprime,lprime,nj)
+      {
+#pragma omp for collapse(2)
+  for (unsigned kl=0;kl<nponetwo;kl++) 
+    {
+      for (unsigned klprime=0;klprime<nponetwo;klprime++) 
+        {
+    k=intsqrt(kl);//degree
+    l=kl-k*k-k;//order
+    kprime=intsqrt(klprime);//degree
+    lprime=klprime-kprime*kprime-kprime;//order
+
+    //make the sum
+    for (unsigned jp=0;jp<2*(n+1);jp++) 
+      {
+        for (unsigned jt=0;jt<n+1;jt++) 
+          {
+      nj=jt+(n+1)*jp;
+      Kp(kl,klprime)+=kernf(ni,nj)*lf(jt,(k*(k+1))/2+abs(l))*lftxmoy(nj,(kprime*(kprime+1))/2+abs(lprime))*ep(jp,n-l)*eptxmoy(nj,n+lprime);
+
+          }
+      }
+
+        }
+    }
+      }
+    }
+  Kp/=4.0*Pi;
+}
+}
+

@@ -19,7 +19,7 @@ void read_commands(string &commandsfilename,unsigned &nd,VecConductivity &sigma,
 
   std::cout << "File " << commandsfilename << " successfully opened" << std::endl;
 
-  double x,y,z,r,theta,phi,ampli,normvec;
+  double x,y,z,r,theta,phi,ampli,normvec,width;
   unsigned n;
   string commands_line;
   string card;
@@ -118,6 +118,12 @@ void read_commands(string &commandsfilename,unsigned &nd,VecConductivity &sigma,
 	  commands_file >> r;
 	  getline(commands_file,commands_line);
 	  sigma(k).SetRadius(naxis,r);
+	}
+	else if (card=="##width"&&inconductivitycard)
+	{
+	  commands_file >> width;
+	  getline(commands_file,commands_line);
+	  sigma(k).SetWidth(width);
 	}
       else if (card=="##amplitude"&&inconductivitycard)
 	{

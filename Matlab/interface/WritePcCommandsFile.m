@@ -82,6 +82,41 @@ for nc = 1:length(conddata)
         fprintf(commandsfile,'cartesian\n');
         fprintf(commandsfile,'%f ', conddata{nc}.axes(3,:));
         fprintf(commandsfile,'\n');
+ 
+    elseif isa(conddata{nc},'PcBallShell')
+        % check radius
+        fprintf(commandsfile,'##radius\n');
+        fprintf(commandsfile,'%f\n', conddata{nc}.radius);
+        % check width
+        fprintf(commandsfile,'##width\n');
+        fprintf(commandsfile,'%f\n', conddata{nc}.width);
+        
+    elseif isa(conddata{nc},'PcEllipsoidShell')
+        % check radii
+        fprintf(commandsfile,'##radius1\n');
+        fprintf(commandsfile,'%f\n', conddata{nc}.radii(1));
+        fprintf(commandsfile,'##radius2\n');
+        fprintf(commandsfile,'%f\n', conddata{nc}.radii(2));
+        fprintf(commandsfile,'##radius3\n');
+        fprintf(commandsfile,'%f\n', conddata{nc}.radii(3));
+        
+        % check axes
+        fprintf(commandsfile,'##axis1\n');
+        fprintf(commandsfile,'cartesian\n');
+        fprintf(commandsfile,'%f ', conddata{nc}.axes(1,:));
+        fprintf(commandsfile,'\n');
+        fprintf(commandsfile,'##axis2\n');
+        fprintf(commandsfile,'cartesian\n');
+        fprintf(commandsfile,'%f ', conddata{nc}.axes(2,:));
+        fprintf(commandsfile,'\n');
+        fprintf(commandsfile,'##axis3\n');
+        fprintf(commandsfile,'cartesian\n');
+        fprintf(commandsfile,'%f ', conddata{nc}.axes(3,:));
+        fprintf(commandsfile,'\n');
+        
+        % check width
+        fprintf(commandsfile,'##width\n');
+        fprintf(commandsfile,'%f\n', conddata{nc}.width);
     else
         error('Please, use piecewise constant conductivities');
     end

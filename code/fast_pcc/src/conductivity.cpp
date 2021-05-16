@@ -9,6 +9,8 @@ Conductivity::Conductivity()
   center = ZeroVecDouble (3);
   axes = IdMatDouble (3);
   radii = ScalVecDouble (3,1.0);
+  radii2 = radii;
+  width = 0.0;
   amplitude = 1.0;
   n=0;
 }
@@ -68,6 +70,20 @@ VecDouble Conductivity::GetRadii() const
 {
   return radii;
 }
+VecDouble Conductivity::GetRadii2() const
+{
+  return radii2;
+}
+void Conductivity::SetWidth(double valwidth)
+{
+  width=valwidth;
+  if (width>0.01)
+  {
+    radii2(0) = radii(0)-width;
+    radii2(1) = radii(1)-width;
+    radii2(2) = radii(2)-width;
+  }
+}
 void Conductivity::SetAmplitude(double valamplitude)
 {
   amplitude=valamplitude;
@@ -76,6 +92,10 @@ void Conductivity::SetAmplitude(double valamplitude)
 double Conductivity::GetAmplitude() const
 {
   return amplitude;
+}
+double Conductivity::GetWidth() const
+{
+  return width;
 }
 
 double Conductivity::GetTwoMu() const
@@ -158,13 +178,25 @@ MatDouble Conductivity::GetSurfacePoints() const
 {
   return x;
 }
+MatDouble Conductivity::GetSurfacePoints2() const
+{
+  return x2;
+}
 VecDouble Conductivity::GetJacobian() const
 {
   return jac;
 }
+VecDouble Conductivity::GetJacobian2() const
+{
+  return jac2;
+}
 MatDouble Conductivity::GetOutwardNormal() const
 {
   return nu;
+}
+MatDouble Conductivity::GetOutwardNormal2() const
+{
+  return nu2;
 }
 MatDouble Conductivity::GetAssociatedLegendreFunctions() const
 {
@@ -186,22 +218,31 @@ MatDouble Conductivity::GetKernelF() const
 {
   return kernf;
 }
+MatDouble Conductivity::GetKernelF2() const
+{
+  return kernf2;
+}
 void Conductivity::InitializeData()
 {
-  t.resize(n+1);
-  ct.resize(n+1);
-  st.resize(n+1);
+
+  // Initialize sizes for boundary surfaces
+  t.resize((n+1));
+  ct.resize((n+1));
+  st.resize((n+1));
   p.resize(2*(n+1));
   cp.resize(2*(n+1));
   sp.resize(2*(n+1));
-  alpha.resize(n+1);
-  beta.resize(n+1);
+  alpha.resize((n+1));
+  beta.resize((n+1));
   xs.resize(2*(n+1)*(n+1),2);
   xc.resize(2*(n+1)*(n+1),3);
   //
   x.resize(2*(n+1)*(n+1),3);
+  x2.resize(2*(n+1)*(n+1),3);
   jac.resize(2*(n+1)*(n+1));
+  jac2.resize(2*(n+1)*(n+1));
   nu.resize(2*(n+1)*(n+1),3);
+  nu2.resize(2*(n+1)*(n+1),3);
   //
   lf.resize(n+1,((n+1)*(n+2))/2);
   ep.resize(2*(n+1),2*n+1);
@@ -209,6 +250,9 @@ void Conductivity::InitializeData()
   cttxmoy.resize(2*(n+1)*(n+1),2*(n+1)*(n+1));
   ptxmoy.resize(2*(n+1)*(n+1),2*(n+1)*(n+1));
   kernf.resize(2*(n+1)*(n+1),2*(n+1)*(n+1));
+  kernf2.resize(2*(n+1)*(n+1),2*(n+1)*(n+1));
+
+
   //
   gauss_legendre(ct,alpha);
   
@@ -247,11 +291,22 @@ void Conductivity::InitializeData()
 	  ni=it+(n+1)*ip;
 	  xs(ni,0)=t(it);xs(ni,1)=p(ip);
 	  xc(ni,0)=st(it)*cp(ip);xc(ni,1)=st(it)*sp(ip);xc(ni,2)=ct(it);
-	  x(ni,0)=radii(0)*xc(ni,0);x(ni,1)=radii(1)*xc(ni,1);x(ni,2)=radii(2)*xc(ni,2);
-	  boostublas::row(x,ni)=center+boostublas::prec_prod(boostublas::trans(axes),boostublas::row(x,ni));
-	  boostublas::row(nu,ni)=xc(ni,0)*radii(1)*radii(2)*boostublas::row(axes,0)+xc(ni,1)*radii(2)*radii(0)*boostublas::row(axes,1)+xc(ni,2)*radii(0)*radii(1)*boostublas::row(axes,2);
-	  jac(ni)=boostublas::norm_2(boostublas::row(nu,ni));
-	  boostublas::row(nu,ni)/=jac(ni);
+    x(ni,0)=radii(0)*xc(ni,0);x(ni,1)=radii(1)*xc(ni,1);x(ni,2)=radii(2)*xc(ni,2);
+    boostublas::row(x,ni)=center+boostublas::prec_prod(boostublas::trans(axes),boostublas::row(x,ni));
+    boostublas::row(nu,ni)=xc(ni,0)*radii(1)*radii(2)*boostublas::row(axes,0)+xc(ni,1)*radii(2)*radii(0)*boostublas::row(axes,1)+xc(ni,2)*radii(0)*radii(1)*boostublas::row(axes,2);
+    jac(ni)=boostublas::norm_2(boostublas::row(nu,ni));
+    boostublas::row(nu,ni)/=jac(ni);
+
+    // If two surfaces
+    if (width > 0.01)
+    {
+      x2(ni,0)=radii2(0)*xc(ni,0);x2(ni,1)=radii2(1)*xc(ni,1);x2(ni,2)=radii2(2)*xc(ni,2);
+      boostublas::row(x2,ni)=center+boostublas::prec_prod(boostublas::trans(axes),boostublas::row(x2,ni));
+      boostublas::row(nu2,ni)=-(xc(ni,0)*radii2(1)*radii2(2)*boostublas::row(axes,0)+xc(ni,1)*radii2(2)*radii2(0)*boostublas::row(axes,1)+xc(ni,2)*radii2(0)*radii2(1)*boostublas::row(axes,2));
+      jac2(ni)=boostublas::norm_2(boostublas::row(nu2,ni));
+      boostublas::row(nu2,ni)/=jac2(ni);
+    }
+	  
 	}
     }
   //
@@ -263,10 +318,17 @@ void Conductivity::InitializeData()
   VecDouble txmoys (3);
   VecDouble y (3);
   VecDouble xloop (3);
-  double jactxmoy,normdiffxquad;
+  VecDouble xloop2 (3);
+  double jactxmoy, jactxmoy2, normdiffxquad;
   VecDouble diffx (3);
+  VecDouble diffx2 (3);
   VecDouble cp2 (2*(n+1));
   VecDouble sp2 (2*(n+1));
+
+  // if only one surface
+  if (width < 0.01)
+  {
+
   for (unsigned jp=0;jp<2*(n+1);jp++)
     {
       cp2(jp)=pow(cp(jp),2);
@@ -308,4 +370,56 @@ void Conductivity::InitializeData()
 	    }
 	}
     }
+  }
+  // if two surfaces
+  else
+  {
+    for (unsigned jp=0;jp<2*(n+1);jp++)
+    {
+      cp2(jp)=pow(cp(jp),2);
+      sp2(jp)=pow(sp(jp),2);
+    }
+  unsigned nj;
+  for (unsigned ip=0;ip<2*(n+1);ip++) 
+    {
+      for (unsigned it=0;it<n+1;it++) 
+  {
+    ni=it+(n+1)*ip;
+    y=boostublas::row(xc,ni);
+    for (unsigned jp=0;jp<2*(n+1);jp++)
+      {
+        for (unsigned jt=0;jt<n+1;jt++) 
+    {
+      nj=jt+(n+1)*jp;
+      y=boostublas::row(xc,ni);
+      txmoy(0)=(cp2(jp)*ct(jt)+sp2(jp))*y(0)+cp(jp)*sp(jp)*(ct(jt)-1.0)*y(1)+cp(jp)*st(jt)*y(2);
+      txmoy(1)=cp(jp)*sp(jp)*(ct(jt)-1.0)*y(0)+(sp2(jp)*ct(jt)+cp2(jp))*y(1)+sp(jp)*st(jt)*y(2);
+      txmoy(2)=-cp(jp)*st(jt)*y(0)-sp(jp)*st(jt)*y(1)+ct(jt)*y(2);
+      txmoys=cart2sph(txmoy);
+      cttxmoy(ni,nj)=cos(txmoys(1));
+      ptxmoy(ni,nj)=txmoys(2);
+
+      jactxmoy=boostublas::norm_2(txmoy(0)*radii(1)*radii(2)*boostublas::row(axes,0)+txmoy(1)*radii(2)*radii(0)*boostublas::row(axes,1)+txmoy(2)*radii(0)*radii(1)*boostublas::row(axes,2));
+      jactxmoy2=boostublas::norm_2(txmoy(0)*radii2(1)*radii2(2)*boostublas::row(axes,0)+txmoy(1)*radii2(2)*radii2(0)*boostublas::row(axes,1)+txmoy(2)*radii2(0)*radii2(1)*boostublas::row(axes,2));
+
+      xloop=boostublas::row(xc,nj)-txmoy;
+      normdiffxquad=norm_2(xloop);
+      xloop(0)*=radii(0);
+      xloop(1)*=radii(1);
+      xloop(2)*=radii(2);
+      xloop2(0)=xloop(0)*radii2(0);
+      xloop2(1)=xloop(1)*radii2(1);
+      xloop2(2)=xloop(2)*radii2(2);
+      diffx=boostublas::prec_prod(boostublas::trans(axes),xloop);
+      diffx/=pow(boostublas::norm_2(diffx),3);
+      diffx2=boostublas::prec_prod(boostublas::trans(axes),xloop2);
+      diffx2/=pow(boostublas::norm_2(diffx2),3);
+
+      kernf(ni,nj)=-alpha(jt)*beta(it)*jactxmoy*normdiffxquad*boostublas::prec_inner_prod(diffx,boostublas::row(nu,nj));
+      kernf2(ni,nj)=-alpha(jt)*beta(it)*jactxmoy2*normdiffxquad*boostublas::prec_inner_prod(diffx2,boostublas::row(nu2,nj));
+    }
+      }
+  }
+    }
+  }
 }

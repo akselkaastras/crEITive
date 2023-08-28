@@ -1,0 +1,66 @@
+#nd
+3
+#dnmap
+dnmap_16.dat
+#conductivity
+##center
+cartesian
+0.434667 0.116469 0.000000 
+##radius1
+0.546000
+##radius2
+0.273000
+##radius3
+0.273000
+##axis1
+cartesian
+0.258819 -0.965926 0.000000 
+##axis2
+cartesian
+0.965926 0.258819 0.000000 
+##axis3
+cartesian
+0.000000 0.000000 1.000000 
+##amplitude
+0.500000
+##n
+10
+#conductivity
+##center
+cartesian
+-0.531259 0.142350 0.000000 
+##radius1
+0.468000
+##radius2
+0.234000
+##radius3
+0.234000
+##axis1
+cartesian
+0.258819 0.965926 0.000000 
+##axis2
+cartesian
+-0.965926 0.258819 0.000000 
+##axis3
+cartesian
+0.000000 0.000000 1.000000 
+##amplitude
+0.500000
+##n
+10
+#conductivity
+##center
+cartesian
+-0.090000 -0.550000 0.000000 
+##radius
+0.273000
+##amplitude
+2.000000
+##n
+10
+#conductivityonmesh
+ball_0p1_3D.msh
+conductivity_dnmapid_16_true.dat
+#qonmesh
+ball_0p1_3D.msh
+q_dnmapid_16_true.dat

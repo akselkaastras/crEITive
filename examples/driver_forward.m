@@ -68,11 +68,14 @@ savecond = 1;   % {0,1} - save conductivity data or not?
 saveq    = 1;   % {0,1} - save q data or not?
 parallel = 1;   % {0,1} - parallelize or not? (Requires openMP)
 
-% (optional) Define your own script for running on a cluster
-clusterscript = 0; 
+% (optional) Define your own script for running on a cluster: if 0 then it
+% runs locally
+%clusterscript = 0; 
+clusterscript = @submitToDTUCluster;
+email = 'akara@dtu.dk'; % enter your own email
 
 % Unique id number for your forward computation
-dnmapid  = 2;
+dnmapid  = 16;
 
 
 %% Run
@@ -81,8 +84,9 @@ dnmapid  = 2;
 [complex, commands, log] = WritePcCommandsFile(conddata_pc,nd,dnmapid,...
                                                savecond,saveq,mesh);
 
-% Start
-StartDNMAP('pcc', parallel, complex, commands, log, clusterscript)
+commands
+log
 
-% Log
-LogUpdate('dnmap', dnmapid)
+% Start
+StartDNMAP('pcc', parallel, complex, commands, log, clusterscript,email)
+

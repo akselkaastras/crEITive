@@ -31,20 +31,27 @@ pkappa      = 1; % |zeta| = p
 mesh = 'ball_0p05_3D.msh';  % choose mesh from crEITive/mesh/ folder
 
 dnmapid     = 10; % unique dnmap integer id number of dnmap data
-reconid     = 10; % unique reconstruction integer id number
+reconid     = 15; % unique reconstruction integer id number
 parallel    = 1; % {0,1} - parallelize or not?
-cluster     = 0;
+
+% (optional) Define your own script for running on a cluster: if 0 then it
+% runs locally
+%clusterscript = 0; 
+clusterscript = @submitToDTUCluster;
+email = 'akara@dtu.dk'; % enter your own email
 
 %% Run
 
 % Commands
 [complex, commands, log] = WriteCommandsFile(reconmethod,ift,ngrid,truncrad,...
                             fixed,pkappa,mesh,reconid,dnmapid);
-% Start
-StartEIT(parallel, complex, commands, log,cluster);
 
-% Log 
-LogUpdate('eit',reconid)
+commands
+log
+
+% Start
+StartEIT(parallel, complex, commands, log, clusterscript, email);
+
 
 
 %% Run full algorithm
@@ -56,8 +63,11 @@ reconid     = 2;
 % Commands
 [complex, commands, log] = WriteCommandsFile(reconmethod,ift,ngrid,truncrad,...
                             fixed,pkappa,mesh,reconid,dnmapid);
-% Start
-StartEIT(parallel, complex, commands, log,cluster);
 
-% Log 
-LogUpdate('eit',reconid)
+commands
+log
+
+% Start
+StartEIT(parallel, complex, commands, log, clusterscript, email);
+
+

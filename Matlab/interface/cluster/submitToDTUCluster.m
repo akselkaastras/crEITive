@@ -1,10 +1,11 @@
-function process = submitToDTUCluster(jobid)
+function submitToDTUCluster(jobid,cmd,email)
 
 jobname = ['job_', jobid];
 
+ncores = 12;
 memcore = 500;
 maxmem  = 800;
-email   = 's153569@student.dtu.dk';
+
 
 % update jobscript string
 str = '#!/bin/sh\n\n#BSUB -q hpc\n';
@@ -25,12 +26,5 @@ fclose(fileid);
 % Submit job
 cmdsub = ['bsub < ', jobscript];
 [~, cmdout] = system(cmdsub);
-% Get process
-id = regexp(cmdout, '\d*','match');
-process = id{end};
-% Update current processes
-fileid = fopen('Matlab/CallerCode/current_processes_dnmap.dat','a+');
-fprintf(fileid,[process, ' dnmap', dnmapid,'\n']);
-fclose(fileid);
 % Delete jobscript
 delete(jobscript);

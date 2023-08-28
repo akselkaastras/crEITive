@@ -1,2 +1,11 @@
 ## Matlab autosave
 **.asv
+
+## Output
+**.out
+
+## Errors
+**.err
+
+## dsstore
+**.DS_Store
